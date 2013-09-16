@@ -1,8 +1,10 @@
 source "http://rubygems.org"
 
-gem 'vertebrae'
+gem 'oauth2'
 
 group :development do
+  gem 'pry'
+  gem 'pry-debugger'
   gem "rspec"
   gem "bundler"
   gem "jeweler", "~> 1.8.7"
