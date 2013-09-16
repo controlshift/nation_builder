@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Woodhull", "Dan Schneiderman"]
   s.date = "2013-09-16"
-  s.description = "TODO: longer description of your gem"
+  s.description = "Ruby wrapper for NationBuilder API"
   s.email = "nathan@controlshiftlabs.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     "lib/nation_builder.rb",
     "lib/nation_builder/client.rb",
     "lib/nation_builder/people.rb",
+    "nation_builder.gemspec",
     "spec/nation_builder_spec.rb",
     "spec/spec_helper.rb"
   ]
@@ -37,7 +38,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "2.0.7"
-  s.summary = "TODO: one-line summary of your gem"
+  s.summary = "NationBuilder API wrapper"
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
