@@ -17,6 +17,8 @@ client.people.list # returns people in nation
 
 The current gem is minimalist -- but we'd welcome pull requests with additional functionality!
 
+[![Build Status](https://travis-ci.org/controlshift/nation_builder.png?branch=master)](https://travis-ci.org/controlshift/nation_builder)
+
 ## Copyright
 
 Copyright (c) 2013 Nathan Woodhull. See LICENSE.txt for
