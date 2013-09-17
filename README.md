@@ -9,8 +9,8 @@ http://nationbuilder.com/api_documentation
 ```
 require 'nation_builder'
 client = NationBuilder.new(hostname: 'whatever.nationbuilder.com', client_id: 'id', client_secret: 'secret', username: 'you@nation.com', password: 'pass')
+client.people.create('person' => {'first_name' => 'George', 'last_name' => 'Washington', 'email' => 'george@washington.com'})
 client.people.list # returns people in nation
-
 ```
 
 ## Copyright
