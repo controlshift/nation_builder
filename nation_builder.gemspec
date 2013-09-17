@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "nation_builder"
-  s.version = "0.0.1"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Woodhull", "Dan Schneiderman"]
-  s.date = "2013-09-16"
+  s.date = "2013-09-17"
   s.description = "Ruby wrapper for NationBuilder API"
   s.email = "nathan@controlshiftlabs.com"
   s.extra_rdoc_files = [
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     ".rspec",
     ".ruby-gemset",
     ".ruby-version",
+    ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -31,7 +32,9 @@ Gem::Specification.new do |s|
     "lib/nation_builder/client.rb",
     "lib/nation_builder/people.rb",
     "nation_builder.gemspec",
+    "spec/client_spec.rb",
     "spec/nation_builder_spec.rb",
+    "spec/people_spec.rb",
     "spec/spec_helper.rb"
   ]
   s.homepage = "http://github.com/controlshift/nation_builder"
@@ -45,6 +48,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<oauth2>, [">= 0"])
+      s.add_development_dependency(%q<webmock>, [">= 0"])
       s.add_development_dependency(%q<pry>, [">= 0"])
       s.add_development_dependency(%q<pry-debugger>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
@@ -52,6 +56,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.7"])
     else
       s.add_dependency(%q<oauth2>, [">= 0"])
+      s.add_dependency(%q<webmock>, [">= 0"])
       s.add_dependency(%q<pry>, [">= 0"])
       s.add_dependency(%q<pry-debugger>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
@@ -60,6 +65,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<oauth2>, [">= 0"])
+    s.add_dependency(%q<webmock>, [">= 0"])
     s.add_dependency(%q<pry>, [">= 0"])
     s.add_dependency(%q<pry-debugger>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
