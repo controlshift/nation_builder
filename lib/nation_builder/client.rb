@@ -15,8 +15,25 @@ module NationBuilder
       NationBuilder::People.new(self)
     end
     
-    def get(path)
-      self.token.get "https://#{hostname}/#{path}"
+    def get(path, opts={})
+      self.token.get "#{base_uri}#{path}", opts.merge(headers: headers)
+    end
+    
+    def post(path, opts={})
+      self.token.post "#{base_uri}#{path}", opts.merge(headers: headers)
+    end
+    
+    private
+    
+    def headers
+      {
+        'Content-Type' => 'application/json',
+        'Accept' => 'application/json'
+      } 
+    end
+    
+    def base_uri
+      "https://#{hostname}/"
     end
   end
 end
