@@ -4,7 +4,7 @@ A very simple ruby gem for interacting with NB people API.
 
 http://nationbuilder.com/api_documentation
 
-## Usage
+### Usage
 
 ```
 require 'nation_builder'
@@ -13,14 +13,14 @@ client.people.create('person' => {'first_name' => 'George', 'last_name' => 'Wash
 client.people.list # returns people in nation
 ```
 
-## Contributing 
+### Contributing 
 
 The current gem is minimalist -- but we'd welcome pull requests with additional functionality!
 
 [![Build Status](https://travis-ci.org/controlshift/nation_builder.png?branch=master)](https://travis-ci.org/controlshift/nation_builder)
 
-## Copyright
+### Copyright
 
-Copyright (c) 2013 Nathan Woodhull. See LICENSE.txt for
+Copyright (c) 2013 ControlShift Ltd. See LICENSE.txt for
 further details.
 
