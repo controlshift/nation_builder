@@ -13,6 +13,10 @@ client.people.create('person' => {'first_name' => 'George', 'last_name' => 'Wash
 client.people.list # returns people in nation
 ```
 
+## Contributing 
+
+The current gem is minimalist -- but we'd welcome pull requests with additional functionality!
+
 ## Copyright
 
 Copyright (c) 2013 Nathan Woodhull. See LICENSE.txt for
