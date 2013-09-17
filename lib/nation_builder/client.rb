@@ -6,10 +6,8 @@ module NationBuilder
       args.each do |key, value|
         self.send("#{key}=".intern, value)
       end
-      client = OAuth2::Client.new(client_id, client_secret, :site => "https://#{hostname}", authorize_url: "https://#{hostname}/oauth/authorize", token_url: "https://#{hostname}/oauth/token" )
-      self.token = client.password.get_token(username, password)
+      self.token = setup_client
     end
-    
     
     def people
       NationBuilder::People.new(self)
@@ -24,6 +22,11 @@ module NationBuilder
     end
     
     private
+    
+    def setup_client
+      client = OAuth2::Client.new(client_id, client_secret, :site => "https://#{hostname}", authorize_url: "https://#{hostname}/oauth/authorize", token_url: "https://#{hostname}/oauth/token" )
+      client.password.get_token(username, password)
+    end
     
     def headers
       {
