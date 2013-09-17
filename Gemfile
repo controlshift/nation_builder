@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
-gem 'oauth2'
+# NationBuilder puts error messages in a different location. 
+gem 'oauth2', git: 'https://github.com/controlshift/oauth2.git'
 
 group :development do
   gem 'webmock'

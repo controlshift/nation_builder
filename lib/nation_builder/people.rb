@@ -6,6 +6,18 @@ module NationBuilder
       self.client = client
     end
     
+    def match(params)
+      begin 
+        JSON.parse(client.get('/api/v1/people/match', params: params).response.env[:body])
+      rescue OAuth2::Error => e
+        if e.code == 'no_matches'
+          return nil
+        else
+          raise e
+        end
+      end
+    end
+    
     def list
       JSON.parse(client.get('/api/v1/people').response.env[:body])
     end
