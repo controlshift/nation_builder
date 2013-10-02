@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'nation_builder'
 require 'webmock/rspec'
-
+require 'json'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
@@ -19,11 +19,15 @@ RSpec.configure do |config|
 
   config.before(:each) do
     WebMock.reset!
+    WebMock.allow_net_connect!
   end
   config.after(:each) do
     WebMock.reset!
   end
 end
+
+
+# Allow real connections
 
 def stub_get(path)
   stub_nation_builder_request(:get, path)

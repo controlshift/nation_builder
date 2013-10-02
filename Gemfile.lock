@@ -1,6 +1,5 @@
-GIT
-  remote: https://github.com/controlshift/oauth2.git
-  revision: 7e60e15878e503f80c8708f5c2cca5d17664fc61
+PATH
+  remote: /work/oauth2
   specs:
     oauth2 (0.9.2)
       faraday (~> 0.8)
