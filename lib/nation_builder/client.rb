@@ -20,6 +20,10 @@ module NationBuilder
     def post(path, opts={})
       self.token.post "#{base_uri}#{path}", opts.merge(headers: headers)
     end
+
+    def put(path, opts={})
+      self.token.put "#{base_uri}#{path}", opts.merge(headers: headers)
+    end
     
     private
     
