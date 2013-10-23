@@ -85,6 +85,7 @@ PLATFORMS
 DEPENDENCIES
   bundler
   jeweler (~> 1.8.7)
+  json
   oauth2!
   pry
   pry-debugger
