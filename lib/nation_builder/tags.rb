@@ -5,5 +5,9 @@ module NationBuilder
     def controller_name
       'tags'
     end
+
+    def people(tag)
+      JSON.parse(client.get(base_path + '/' + tag).response.env[:body])
+    end
   end
 end

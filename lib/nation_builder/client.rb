@@ -16,6 +16,10 @@ module NationBuilder
     def people
       NationBuilder::People.new(self)
     end
+
+    def tags
+      NationBuilder::Tags.new(self)
+    end
     
     def get(path, opts={})
       self.client.get "#{base_uri}#{path}", opts.merge(headers: headers)
@@ -28,7 +32,11 @@ module NationBuilder
     def put(path, opts={})
       self.client.put "#{base_uri}#{path}", opts.merge(headers: headers)
     end
-    
+
+    def delete(path, opts={})
+      self.client.delete "#{base_uri}#{path}", opts.merge(headers: headers)
+    end
+
     private
     
     def setup_client_from_password

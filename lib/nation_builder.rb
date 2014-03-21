@@ -1,5 +1,6 @@
 require 'oauth2'
 require 'active_support/all'
+require 'nation_builder/actions/show'
 require 'nation_builder/actions/list'
 require 'nation_builder/actions/update'
 require 'nation_builder/actions/create'

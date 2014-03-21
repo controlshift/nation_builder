@@ -1,5 +1,6 @@
 module NationBuilder
   class People < RemoteController
+    include NationBuilder::Actions::Show
     include NationBuilder::Actions::List
     include NationBuilder::Actions::Update
     include NationBuilder::Actions::Create
@@ -28,6 +29,30 @@ module NationBuilder
       else
         self.create params
       end
+    end
+
+    def taggings(person_id)
+      JSON.parse(client.get(taggings_path(person_id)).response.env[:body])
+    end
+
+    def add_tagging(person_id, tag)
+      body = JSON.generate({'tagging' => {'tag' => tag}})
+      JSON.parse(client.put(taggings_path(person_id), body: body).response.env[:body])
+    end
+
+    def delete_tagging(person_id, tag)
+      response = client.delete("#{taggings_path(person_id)}/#{tag}")
+      if response.response.env[:status] == 204
+        return true
+      else
+        return response
+      end
+    end
+
+    private
+
+    def taggings_path(person_id)
+      "#{base_path}/#{person_id}/taggings"
     end
   end  
 end
