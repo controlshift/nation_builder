@@ -25,9 +25,11 @@ module NationBuilder
       person = self.match('email' => params['person']['email'])
       if(person)
         new_person = person['person'].merge(params['person'])
-        self.update new_person['id'], 'person' => new_person
+        r = self.update new_person['id'], 'person' => new_person
+        {is_new: false, response: r}
       else
-        self.create params
+        r = self.create params
+        {is_new: true, response: r}
       end
     end
 
