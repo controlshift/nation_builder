@@ -1,9 +1,11 @@
 module NationBuilder
-  class People
-    attr_accessor :client
-    
-    def initialize(client)
-      self.client = client
+  class People < RemoteController
+    include NationBuilder::Actions::List
+    include NationBuilder::Actions::Update
+    include NationBuilder::Actions::Create
+
+    def controller_name
+      'people'
     end
     
     def match(params)
@@ -16,20 +18,6 @@ module NationBuilder
           raise e
         end
       end
-    end
-    
-    def list
-      JSON.parse(client.get('/api/v1/people').response.env[:body])
-    end
-    
-    def create params
-      body = JSON.generate(params)
-      JSON.parse(client.post('/api/v1/people', body: body).response.env[:body])
-    end
-
-    def update id, params
-      body = JSON.generate(params)
-      JSON.parse(client.put("/api/v1/people/#{id}", body: body).response.env[:body])
     end
 
     def create_or_update params
