@@ -9,8 +9,9 @@ Gem::Specification.new do |s|
   s.version = "0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib"]
   s.authors = ["Nathan Woodhull", "Dan Schneiderman"]
-  s.date = "2013-10-28"
+  s.date = "2015-12-28"
   s.description = "Ruby wrapper for NationBuilder API"
   s.email = "nathan@controlshiftlabs.com"
   s.extra_rdoc_files = [
@@ -30,8 +31,14 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "lib/nation_builder.rb",
+    "lib/nation_builder/actions/create.rb",
+    "lib/nation_builder/actions/list.rb",
+    "lib/nation_builder/actions/show.rb",
+    "lib/nation_builder/actions/update.rb",
     "lib/nation_builder/client.rb",
     "lib/nation_builder/people.rb",
+    "lib/nation_builder/remote_controller.rb",
+    "lib/nation_builder/tags.rb",
     "nation_builder.gemspec",
     "spec/client_spec.rb",
     "spec/fixtures/not_found",
@@ -43,8 +50,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/controlshift/nation_builder"
   s.licenses = ["MIT"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = "2.1.10"
+  s.rubygems_version = "2.4.8"
   s.summary = "NationBuilder API wrapper"
 
   if s.respond_to? :specification_version then
@@ -53,18 +59,20 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<oauth2>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<activesupport>, ["> 3.0.0"])
       s.add_development_dependency(%q<webmock>, [">= 0"])
       s.add_development_dependency(%q<pry>, [">= 0"])
-      s.add_development_dependency(%q<pry-debugger>, [">= 0"])
+      s.add_development_dependency(%q<pry-byebug>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.7"])
     else
       s.add_dependency(%q<oauth2>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<activesupport>, ["> 3.0.0"])
       s.add_dependency(%q<webmock>, [">= 0"])
       s.add_dependency(%q<pry>, [">= 0"])
-      s.add_dependency(%q<pry-debugger>, [">= 0"])
+      s.add_dependency(%q<pry-byebug>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
@@ -72,9 +80,10 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<oauth2>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<activesupport>, ["> 3.0.0"])
     s.add_dependency(%q<webmock>, [">= 0"])
     s.add_dependency(%q<pry>, [">= 0"])
-    s.add_dependency(%q<pry-debugger>, [">= 0"])
+    s.add_dependency(%q<pry-byebug>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
