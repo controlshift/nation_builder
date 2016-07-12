@@ -49,3 +49,4 @@ pkg
 #*.rbc
 example.rb
 .idea
+.byebug_history
