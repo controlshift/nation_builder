@@ -21,20 +21,9 @@ GEM
     addressable (2.3.5)
     atomic (1.1.16)
     builder (3.2.2)
-<<<<<<< HEAD
-    byebug (2.7.0)
-      columnize (~> 0.3)
-      debugger-linecache (~> 1.2)
-    coderay (1.1.0)
-    columnize (0.9.0)
-    crack (0.4.1)
-      safe_yaml (~> 0.9.0)
-    debugger-linecache (1.2.0)
-=======
     byebug (9.0.5)
     crack (0.4.1)
       safe_yaml (~> 0.9.0)
->>>>>>> modernize gem dependencies.
     diff-lcs (1.2.4)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
