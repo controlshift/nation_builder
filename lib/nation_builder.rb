@@ -1,5 +1,6 @@
 require 'oauth2'
 require 'active_support/all'
+require 'nation_builder/exceptions/validation_error'
 require 'nation_builder/actions/show'
 require 'nation_builder/actions/list'
 require 'nation_builder/actions/update'
@@ -8,6 +9,7 @@ require 'nation_builder/client'
 require 'nation_builder/remote_controller'
 require 'nation_builder/tags'
 require 'nation_builder/people'
+
 
 module NationBuilder 
 

@@ -55,7 +55,16 @@ module NationBuilder
 
     def add(params)
       body = JSON.generate(params)
-      JSON.parse(client.put("#{base_path}/add", body: body).response.env[:body])
+      begin
+        JSON.parse(client.put("#{base_path}/add", body: body).response.env[:body])
+      rescue OAuth2::Error => e
+        if e.response.parsed['code'] == 'validation_failed'
+          raise NationBuilder::Exceptions::ValidationError.new(e.response.parsed['message'], e.response.parsed['validation_errors'], e.response.parsed['code'])
+        else
+          raise e
+        end
+      end
+
     end
 
     def taggings(person_id)
