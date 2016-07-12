@@ -27,12 +27,23 @@ module NationBuilder
 
     def create_or_update params
       person = self.match('email' => params['person']['email'])
-      if(person)
+      if person
         new_person = person['person'].merge(params['person'])
         r = self.update new_person['id'], 'person' => new_person
         {is_new: false, response: r}
       else
         r = self.create params
+        {is_new: true, response: r}
+      end
+    end
+
+    def match_or_add(params)
+      person = self.match('email' => params['person']['email'])
+      if person
+        r = self.add(params)
+        {is_new: false, response: r}
+      else
+        r = self.add(params)
         {is_new: true, response: r}
       end
     end
