@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
 # NationBuilder puts error messages in a different location.
 gem 'oauth2', git: 'https://github.com/controlshift/oauth2.git'
