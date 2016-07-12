@@ -11,7 +11,7 @@ module NationBuilder
     
     def match(params)
       begin 
-        JSON.parse(client.get('/api/v1/people/match', params: params).response.env[:body])
+        JSON.parse(client.get("#{base_path}/match", params: params).response.env[:body])
       rescue OAuth2::Error => e
         if e.response.parsed['code'] == 'no_matches'
           return nil
@@ -19,6 +19,10 @@ module NationBuilder
           raise e
         end
       end
+    end
+
+    def search(params)
+      JSON.parse(client.get("#{base_path}/search", params: params).response.env[:body])
     end
 
     def create_or_update params
@@ -31,6 +35,16 @@ module NationBuilder
         r = self.create params
         {is_new: true, response: r}
       end
+    end
+
+    def push(params)
+      body = JSON.generate(params)
+      JSON.parse(client.put("#{base_path}/push", body: body).response.env[:body])
+    end
+
+    def add(params)
+      body = JSON.generate(params)
+      JSON.parse(client.put("#{base_path}/add", body: body).response.env[:body])
     end
 
     def taggings(person_id)
