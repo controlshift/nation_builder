@@ -1,4 +1,14 @@
 module NationBuilder
+  class RateLimitedError < StandardError
+    def initialize(oauth2_response)
+      message = "NationBuilder rate limit error. Current values:\n"
+      message << "Limit: #{oauth2_response.headers["x-ratelimit-limit"]}\n"
+      message << "Remaining: #{oauth2_response.headers["x-ratelimit-remaining"]}\n"
+      message << "Reset: #{Time.at(oauth2_response.headers["x-ratelimit-reset"].try(:to_i) || 0)}"
+      super(message)
+    end
+  end
+
   class Client
     attr_accessor :client, :token, :client_secret, :client_id, :username, :password, :hostname, :instrumentation
 
@@ -47,7 +57,15 @@ module NationBuilder
         self.instrumentation.call(stats)
       end
 
-      self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
+      begin
+        self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
+      rescue OAuth2::Error => e
+        if e.code.try(:downcase) == 'rate_limited'
+          raise RateLimitedError.new(response)
+        end
+
+        raise
+      end
     end
 
     def setup_client_from_password
