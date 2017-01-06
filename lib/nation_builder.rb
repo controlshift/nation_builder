@@ -23,7 +23,8 @@ module NationBuilder
     # @option options [String] :token OAuth2 access token used for perform authenticated calls. Not required if performing authenticated calls with :username and :password
     # @option options [String] :username username used for getting a OAuth 2.0 access token. Not required if performing authenticated calls with :token
     # @option options [String] :password password used for getting a OAuth 2.0 access token. Not required if performing authenticated calls with :token
-    # @option options [Proc] :instrumentation block of code to be invoked on every request to NationBuilder. Should receive a single Hash argument that includes :path and :request_type
+    # @option options [Proc] :instrumentation block of code to be invoked on every request to NationBuilder. Should receive a single Hash argument that includes :path and :request_type.
+    #                                         :path argument is normalized, replacing IDs with '_'
     def new(options = {})
       NationBuilder::Client.new(options)
     end

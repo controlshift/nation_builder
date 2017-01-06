@@ -41,7 +41,9 @@ module NationBuilder
 
     def instrumented_request(request_type, path, opts)
       if self.instrumentation
-        stats = { path: path, request_type: request_type }
+        # Normalize path to remove IDs from it
+        normalized_path = path.gsub(/\/\d+\//, '/_/')
+        stats = { path: normalized_path, request_type: request_type }
         self.instrumentation.call(stats)
       end
 
