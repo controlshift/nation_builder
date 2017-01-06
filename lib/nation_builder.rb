@@ -11,14 +11,24 @@ require 'nation_builder/tags'
 require 'nation_builder/people'
 
 
-module NationBuilder 
+module NationBuilder
 
   class << self
+    #  Initializes a new NationBuilder client
+    #
+    # @param [Hash] options the options to make the request with
+    # @option options [String] :client_id client ID used for OAuth 2.0 authenticated requests
+    # @option options [String] :client_secret secret used for OAuth 2.0 authenticated requests
+    # @option options [String] :hostname NationBuilder site hostname, must not include protocol (i.e.: 'http://')
+    # @option options [String] :token OAuth2 access token used for perform authenticated calls. Not required if performing authenticated calls with :username and :password
+    # @option options [String] :username username used for getting a OAuth 2.0 access token. Not required if performing authenticated calls with :token
+    # @option options [String] :password password used for getting a OAuth 2.0 access token. Not required if performing authenticated calls with :token
+    # @option options [Proc] :instrumentation block of code to be invoked on every request to NationBuilder. Should receive a single Hash argument that includes :path and :request_type
     def new(options = {})
       NationBuilder::Client.new(options)
     end
-    
-    def method_missing(method, *args) 
+
+    def method_missing(method, *args)
       return super unless new.respond_to?(method)
       new.send(method, *args)
     end

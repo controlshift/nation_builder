@@ -10,5 +10,5 @@ group :development do
   gem 'byebug'
   gem 'rspec'
   gem 'bundler'
-  gem 'jeweler', "~> 1.8.7"
+  gem "juwelier", "~> 2.1.0"
 end

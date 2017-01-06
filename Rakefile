@@ -11,9 +11,9 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+require 'juwelier'
+Juwelier::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
   gem.name = "nation_builder"
   gem.homepage = "http://github.com/controlshift/nation_builder"
   gem.license = "MIT"
@@ -23,7 +23,7 @@ Jeweler::Tasks.new do |gem|
   gem.authors = ["Nathan Woodhull", "Dan Schneiderman"]
   # dependencies defined in Gemfile
 end
-Jeweler::RubygemsDotOrgTasks.new
+Juwelier::RubygemsDotOrgTasks.new
 
 require 'rspec/core'
 require 'rspec/core/rake_task'

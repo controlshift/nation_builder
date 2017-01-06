@@ -1,7 +1,7 @@
 module NationBuilder
   class Client
-    attr_accessor :client, :token, :client_secret, :client_id, :username, :password, :hostname
-    
+    attr_accessor :client, :token, :client_secret, :client_id, :username, :password, :hostname, :instrumentation
+
     def initialize(args = {})
       args.each do |key, value|
         self.send("#{key}=".intern, value)
@@ -12,7 +12,7 @@ module NationBuilder
         self.client = setup_client_from_token
       end
     end
-    
+
     def people
       NationBuilder::People.new(self)
     end
@@ -20,25 +20,34 @@ module NationBuilder
     def tags
       NationBuilder::Tags.new(self)
     end
-    
+
     def get(path, opts={})
-      self.client.get "#{base_uri}#{path}", opts.merge(headers: headers)
+      instrumented_request(:get, path, opts)
     end
-    
+
     def post(path, opts={})
-      self.client.post "#{base_uri}#{path}", opts.merge(headers: headers)
+      instrumented_request(:post, path, opts)
     end
 
     def put(path, opts={})
-      self.client.put "#{base_uri}#{path}", opts.merge(headers: headers)
+      instrumented_request(:put, path, opts)
     end
 
     def delete(path, opts={})
-      self.client.delete "#{base_uri}#{path}", opts.merge(headers: headers)
+      instrumented_request(:delete, path, opts)
     end
 
     private
-    
+
+    def instrumented_request(request_type, path, opts)
+      if self.instrumentation
+        stats = { path: path, request_type: request_type }
+        self.instrumentation.call(stats)
+      end
+
+      self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
+    end
+
     def setup_client_from_password
       setup_client.password.get_token(username, password)
     end
@@ -48,17 +57,17 @@ module NationBuilder
     end
 
     def setup_client
-      OAuth2::Client.new(client_id, client_secret, :site => "https://#{hostname}", authorize_url: "https://#{hostname}/oauth/authorize", token_url: "https://#{hostname}/oauth/token" )
+      OAuth2::Client.new(client_id, client_secret, site: "https://#{hostname}", authorize_url: "https://#{hostname}/oauth/authorize", token_url: "https://#{hostname}/oauth/token" )
     end
 
-    
+
     def headers
       {
         'Content-Type' => 'application/json',
         'Accept' => 'application/json'
-      } 
+      }
     end
-    
+
     def base_uri
       "https://#{hostname}/"
     end
