@@ -47,6 +47,44 @@ describe NationBuilder::Client do
         subject.send(request_type, request_path)
       end
     end
+
+    describe 'error handling' do
+      let(:error_response) { double(parsed: nil, body: 'This is an error') }
+      let(:oauth_exception) { OAuth2::Error.new(error_response) }
+
+      before :each do
+        allow(error_response).to receive(:error=)
+        expect(client).to receive(request_type).and_raise(oauth_exception)
+      end
+
+      context 'error code is "rate_limited"' do
+        before :each do
+          expect(oauth_exception).to receive(:code).and_return('rate_limited')
+        end
+
+        it 'should raise RateLimitedError' do
+          limit_reset = Time.parse('2017-01-01 12:00 +0000')
+          allow(error_response).to receive(:headers).and_return({'x-ratelimit-limit' => '100', 'x-ratelimit-remaining' => '0', 'x-ratelimit-reset' => limit_reset.to_i})
+
+          error_message = "NationBuilder rate limit error. Current values:\nLimit: 100\nRemaining: 0\nReset: #{Time.at(limit_reset.to_i)}\nBody: This is an error"
+
+          expect { subject.send(request_type, 'foo/bar') }.to raise_error NationBuilder::RateLimitedError, error_message
+        end
+
+        it 'should not fail if "x-ratelimit-reset" header not present' do
+          allow(error_response).to receive(:headers).and_return({'x-ratelimit-limit' => '100', 'x-ratelimit-remaining' => '0'})
+          error_message = "NationBuilder rate limit error. Current values:\nLimit: 100\nRemaining: 0\nReset: #{Time.at(0)}\nBody: This is an error"
+
+          expect { subject.send(request_type, 'foo/bar') }.to raise_error NationBuilder::RateLimitedError, error_message
+        end
+      end
+
+      it 'should raise generic exception if code is not "rate_limited"' do
+        expect(oauth_exception).to receive(:code).and_return('another_error')
+
+        expect { subject.send(request_type, 'foo/bar') }.to raise_error oauth_exception
+      end
+    end
   end
 
   [:get, :post, :put, :delete].each do |request|

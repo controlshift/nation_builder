@@ -4,7 +4,8 @@ module NationBuilder
       message = "NationBuilder rate limit error. Current values:\n"
       message << "Limit: #{oauth2_response.headers["x-ratelimit-limit"]}\n"
       message << "Remaining: #{oauth2_response.headers["x-ratelimit-remaining"]}\n"
-      message << "Reset: #{Time.at(oauth2_response.headers["x-ratelimit-reset"].try(:to_i) || 0)}"
+      message << "Reset: #{Time.at(oauth2_response.headers["x-ratelimit-reset"].try(:to_i) || 0)}\n"
+      message << "Body: #{oauth2_response.body}"
       super(message)
     end
   end
@@ -61,7 +62,7 @@ module NationBuilder
         self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
       rescue OAuth2::Error => e
         if e.code.try(:downcase) == 'rate_limited'
-          raise RateLimitedError.new(response)
+          raise RateLimitedError.new(e.response)
         end
 
         raise
