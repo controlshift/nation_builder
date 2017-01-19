@@ -59,7 +59,7 @@ describe NationBuilder::Client do
 
       context 'error code is "rate_limited"' do
         before :each do
-          expect(oauth_exception).to receive(:code).and_return('rate_limited')
+          expect(oauth_exception).to receive(:code).at_least(:once).and_return('rate_limited')
         end
 
         it 'should raise RateLimitedError' do
@@ -79,8 +79,24 @@ describe NationBuilder::Client do
         end
       end
 
+      context 'error message includes rate_limited but code is nil' do
+        before :each do
+          allow(oauth_exception).to receive(:code).and_return(nil)
+          allow(oauth_exception).to receive(:message).and_return('{"code":"rate_limited","You have been rate limited."}')
+        end
+
+        it 'should raise RateLimitedError' do
+          limit_reset = Time.parse('2017-01-01 12:00 +0000')
+          allow(error_response).to receive(:headers).and_return({'x-ratelimit-limit' => '100', 'x-ratelimit-remaining' => '0', 'x-ratelimit-reset' => limit_reset.to_i})
+
+          error_message = "NationBuilder rate limit error. Current values:\nLimit: 100\nRemaining: 0\nReset: #{Time.at(limit_reset.to_i)}\nBody: This is an error"
+
+          expect { subject.send(request_type, 'foo/bar') }.to raise_error NationBuilder::RateLimitedError, error_message
+        end
+      end
+
       it 'should raise generic exception if code is not "rate_limited"' do
-        expect(oauth_exception).to receive(:code).and_return('another_error')
+        expect(oauth_exception).to receive(:code).at_least(:once).and_return('another_error')
 
         expect { subject.send(request_type, 'foo/bar') }.to raise_error oauth_exception
       end

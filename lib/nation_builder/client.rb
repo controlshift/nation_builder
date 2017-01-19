@@ -61,7 +61,7 @@ module NationBuilder
       begin
         self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
       rescue OAuth2::Error => e
-        if e.code.try(:downcase) == 'rate_limited'
+        if (!e.code.nil? && e.code.downcase == 'rate_limited') || (e.message =~ /rate_limited/)
           raise RateLimitedError.new(e.response)
         end
 
