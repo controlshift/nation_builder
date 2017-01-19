@@ -11,7 +11,7 @@ module NationBuilder
   end
 
   class Client
-    attr_accessor :client, :token, :client_secret, :client_id, :username, :password, :hostname, :instrumentation
+    attr_accessor :client, :token, :client_secret, :client_id, :username, :password, :hostname, :instrumentation, :logger
 
     def initialize(args = {})
       args.each do |key, value|
@@ -59,7 +59,17 @@ module NationBuilder
       end
 
       begin
-        self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
+        response = self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
+        if !logger.nil?
+          log_message = <<-MESSAGE
+NationBuilder rate limit headers for #{base_uri}:
+X-RateLimit-Limit: #{response.headers["x-ratelimit-limit"]}
+X-RateLimit-Remaining: #{response.headers['x-ratelimit-remaining']}
+X-RateLimit-Reset: #{Time.at(response.headers["x-ratelimit-reset"].try(:to_i) || 0)}
+          MESSAGE
+          logger.info(log_message)
+        end
+        response
       rescue OAuth2::Error => e
         if (!e.code.nil? && e.code.downcase == 'rate_limited') || (e.message =~ /rate_limited/)
           raise RateLimitedError.new(e.response)
