@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Nathan Woodhull", "Dan Schneiderman"]
-  s.date = "2017-01-19"
+  s.date = "2017-08-21"
   s.description = "Ruby wrapper for NationBuilder API"
   s.email = "nathan@controlshiftlabs.com"
   s.extra_rdoc_files = [
@@ -65,7 +65,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<byebug>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
-      s.add_development_dependency(%q<juwelier>, ["~> 2.1.0"])
+      s.add_development_dependency(%q<juwelier>, [">= 0"])
     else
       s.add_dependency(%q<oauth2>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
@@ -74,7 +74,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<byebug>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 0"])
-      s.add_dependency(%q<juwelier>, ["~> 2.1.0"])
+      s.add_dependency(%q<juwelier>, [">= 0"])
     end
   else
     s.add_dependency(%q<oauth2>, [">= 0"])
@@ -84,7 +84,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<byebug>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 0"])
-    s.add_dependency(%q<juwelier>, ["~> 2.1.0"])
+    s.add_dependency(%q<juwelier>, [">= 0"])
   end
 end
 
