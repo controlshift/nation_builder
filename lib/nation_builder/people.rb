@@ -8,9 +8,9 @@ module NationBuilder
     def controller_name
       'people'
     end
-    
+
     def match(params)
-      begin 
+      begin
         JSON.parse(client.get("#{base_path}/match", params: params).response.env[:body])
       rescue OAuth2::Error => e
         if e.response.parsed['code'] == 'no_matches'
@@ -88,7 +88,7 @@ module NationBuilder
     private
 
     def taggings_path(person_id)
-      "#{base_path}/#{person_id}/taggings"
+      "#{base_path}/#{CGI.escape(person_id)}/taggings"
     end
-  end  
+  end
 end

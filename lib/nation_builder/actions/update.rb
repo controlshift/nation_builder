@@ -4,7 +4,7 @@ module NationBuilder
 
       def update id, params
         body = JSON.generate(params)
-        JSON.parse(client.put("#{base_path}/#{id}", body: body).response.env[:body])
+        JSON.parse(client.put("#{base_path}/#{CGI.escape(id)}", body: body).response.env[:body])
       end
 
     end
