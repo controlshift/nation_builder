@@ -88,7 +88,7 @@ module NationBuilder
     private
 
     def taggings_path(person_id)
-      "#{base_path}/#{CGI.escape(person_id)}/taggings"
+      "#{base_path}/#{CGI.escape(person_id.to_s)}/taggings"
     end
   end
 end
