@@ -7,7 +7,7 @@ module NationBuilder
     end
 
     def people(tag)
-      JSON.parse(client.get(base_path + '/' + tag).response.env[:body])
+      JSON.parse(client.get("#{base_path}/#{CGI.escape(tag)}").response.env[:body])
     end
   end
 end
