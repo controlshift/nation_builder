@@ -19,7 +19,7 @@ client.tags.list # all tags.
 
 The current gem is minimalist -- but we'd welcome pull requests with additional functionality!
 
-[![Build Status](https://travis-ci.org/controlshift/nation_builder.png?branch=master)](https://travis-ci.org/controlshift/nation_builder)
+[![CI Status](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml/badge.svg)](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml)
 
 ### Copyright
 
