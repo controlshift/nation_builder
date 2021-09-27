@@ -13,7 +13,7 @@ module NationBuilder
       begin
         JSON.parse(client.get("#{base_path}/match", params: params).response.env[:body])
       rescue OAuth2::Error => e
-        if e.response.parsed['code'] == 'no_matches'
+        if e.response.parsed && e.response.parsed['code'] == 'no_matches'
           return nil
         else
           raise e
