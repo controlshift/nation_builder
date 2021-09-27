@@ -21,6 +21,13 @@ The current gem is minimalist -- but we'd welcome pull requests with additional 
 
 [![CI Status](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml/badge.svg)](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml)
 
+### Release
+
+```
+rake version:bump:minor
+BRANCH=main rake release
+```
+
 ### Copyright
 
 Copyright (c) 2013 ControlShift Ltd. See LICENSE.txt for
