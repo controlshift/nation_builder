@@ -10,7 +10,7 @@ http://nationbuilder.com/api_documentation
 require 'nation_builder'
 client = NationBuilder.new(hostname: 'whatever.nationbuilder.com', client_id: 'id', client_secret: 'secret', username: 'you@nation.com', password: 'pass')
 client.people.create('person' => {'first_name' => 'George', 'last_name' => 'Washington', 'email' => 'george@washington.com'})
-client.people.match('email' => 'george@washington.com) # either a person hash or nil. 
+client.people.match('email' => 'george@washington.com') # either a person hash or nil. 
 client.people.list # returns people in nation
 client.tags.list # all tags.
 ```
@@ -23,10 +23,7 @@ The current gem is minimalist -- but we'd welcome pull requests with additional 
 
 ### Release
 
-```
-rake version:bump:minor
-BRANCH=main rake release
-```
+Bump `NationBuilder::VERSION` in `lib/nation_builder/version.rb`, merge to main, then run `bundle exec rake release`.
 
 ### Copyright
 
