@@ -1,106 +1,64 @@
+# frozen_string_literal: true
+
 module NationBuilder
-  class RateLimitedError < StandardError
-    def initialize(oauth2_response)
-      message = "NationBuilder rate limit error. Current values:\n"
-      message << "Limit: #{oauth2_response.headers["x-ratelimit-limit"]}\n"
-      message << "Remaining: #{oauth2_response.headers["x-ratelimit-remaining"]}\n"
-      message << "Reset: #{Time.at(oauth2_response.headers["x-ratelimit-reset"].try(:to_i) || 0)}\n"
-      message << "Body: #{oauth2_response.body}"
-      super(message)
-    end
-  end
-
   class Client
-    attr_accessor :client, :token, :client_secret, :client_id, :username, :password, :hostname, :instrumentation, :logger
+    attr_reader :hostname, :connection
 
-    def initialize(args = {})
-      args.each do |key, value|
-        self.send("#{key}=".intern, value)
-      end
-      if username.present? && password.present?
-        self.client = setup_client_from_password
-      elsif token.present?
-        self.client = setup_client_from_token
-      end
+    # @param hostname [String] the nation's hostname, without protocol, e.g. "mynation.nationbuilder.com"
+    # @param token [String] OAuth 2.0 access token
+    # @param instrumentation [#call, nil] called before every request with { path:, request_type: };
+    #   numeric IDs in the path are replaced with "_"
+    # @param logger [Logger, nil] when given, rate limit headers from each response are logged at info level
+    # @param adapter [Symbol] Faraday adapter
+    def initialize(hostname:, token:, instrumentation: nil, logger: nil, adapter: Faraday.default_adapter,
+                   open_timeout: 10, timeout: 30)
+      @hostname = hostname
+      @instrumentation = instrumentation
+      @logger = logger
+      @connection = build_connection(token, adapter, { open_timeout:, timeout: })
     end
 
-    def people
-      NationBuilder::People.new(self)
-    end
+    def people = People.new(self)
+    def tags = Tags.new(self)
 
-    def tags
-      NationBuilder::Tags.new(self)
-    end
-
-    def get(path, opts={})
-      instrumented_request(:get, path, opts)
-    end
-
-    def post(path, opts={})
-      instrumented_request(:post, path, opts)
-    end
-
-    def put(path, opts={})
-      instrumented_request(:put, path, opts)
-    end
-
-    def delete(path, opts={})
-      instrumented_request(:delete, path, opts)
-    end
+    def get(path, params = nil) = request(:get, path, params:)
+    def post(path, body) = request(:post, path, body:)
+    def put(path, body) = request(:put, path, body:)
+    def delete(path) = request(:delete, path)
 
     private
 
-    def instrumented_request(request_type, path, opts)
-      if self.instrumentation
-        # Normalize path to remove IDs from it
-        normalized_path = path.gsub(/\/\d+\//, '/_/')
-        stats = { path: normalized_path, request_type: request_type }
-        self.instrumentation.call(stats)
-      end
-
-      begin
-        response = self.client.send(request_type, "#{base_uri}#{path}", opts.merge(headers: headers))
-        if !logger.nil?
-          log_message = <<-MESSAGE
-NationBuilder rate limit headers for #{base_uri}:
-X-RateLimit-Limit: #{response.headers["x-ratelimit-limit"]}
-X-RateLimit-Remaining: #{response.headers['x-ratelimit-remaining']}
-X-RateLimit-Reset: #{Time.at(response.headers["x-ratelimit-reset"].try(:to_i) || 0)}
-          MESSAGE
-          logger.info(log_message)
-        end
-        response
-      rescue OAuth2::Error => e
-        if (!e.code.nil? && e.code.downcase == 'rate_limited') || (e.message =~ /rate_limited/)
-          raise RateLimitedError.new(e.response)
-        end
-
-        raise
+    def build_connection(token, adapter, request_options)
+      Faraday.new(url: "https://#{hostname}/api/v1/", headers: { 'Accept' => 'application/json' },
+                  request: request_options) do |f|
+        f.request :authorization, 'Bearer', token
+        f.request :json
+        f.response :json, content_type: /\bjson$/
+        f.adapter adapter
       end
     end
 
-    def setup_client_from_password
-      setup_client.password.get_token(username, password)
+    def request(method, path, params: nil, body: nil)
+      @instrumentation&.call(path: path.gsub(%r{(?<=/)\d+(?=/|\z)}, '_'), request_type: method)
+
+      response = connection.run_request(method, path, body, nil) do |req|
+        req.params.update(params) if params
+      end
+      log_rate_limit(response)
+      raise Error.from_response(response) unless response.success?
+
+      response
     end
 
-    def setup_client_from_token
-      OAuth2::AccessToken.new(setup_client, token)
-    end
+    def log_rate_limit(response)
+      return unless @logger
 
-    def setup_client
-      OAuth2::Client.new(client_id, client_secret, site: "https://#{hostname}", authorize_url: "https://#{hostname}/oauth/authorize", token_url: "https://#{hostname}/oauth/token" )
-    end
-
-
-    def headers
-      {
-        'Content-Type' => 'application/json',
-        'Accept' => 'application/json'
-      }
-    end
-
-    def base_uri
-      "https://#{hostname}/"
+      headers = response.headers
+      @logger.info(
+        "NationBuilder rate limit headers for #{hostname}: " \
+        "limit=#{headers['x-ratelimit-limit']} remaining=#{headers['x-ratelimit-remaining']} " \
+        "reset=#{headers['x-ratelimit-reset'] && Time.at(headers['x-ratelimit-reset'].to_i)}"
+      )
     end
   end
 end

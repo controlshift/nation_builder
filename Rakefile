@@ -1,49 +1,10 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'rubygems'
-require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
-require 'rake'
-
-require 'juwelier'
-Juwelier::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
-  gem.name = "nation_builder"
-  gem.homepage = "http://github.com/controlshift/nation_builder"
-  gem.license = "MIT"
-  gem.summary = "NationBuilder API wrapper"
-  gem.description = %Q{Ruby wrapper for NationBuilder API}
-  gem.email = "nathan@controlshiftlabs.com"
-  gem.authors = ["Nathan Woodhull", "Dan Schneiderman"]
-  # dependencies defined in Gemfile
-end
-Juwelier::RubygemsDotOrgTasks.new
-
-require 'rspec/core'
+require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
-end
+require 'rubocop/rake_task'
 
-RSpec::Core::RakeTask.new(:rcov) do |spec|
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
-end
+RSpec::Core::RakeTask.new(:spec)
+RuboCop::RakeTask.new
 
-task :default => :spec
-
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "nation_builder #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
+task default: %i[rubocop spec]

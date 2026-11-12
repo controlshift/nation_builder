@@ -1,13 +1,11 @@
+# frozen_string_literal: true
+
 module NationBuilder
-  class Tags < RemoteController
-    include NationBuilder::Actions::List
+  class Tags < Resource
+    def people(tag) = client.get("#{member_path(tag)}/people").body
 
-    def controller_name
-      'tags'
-    end
+    private
 
-    def people(tag)
-      JSON.parse(client.get("#{base_path}/#{CGI.escape(tag.to_s)}").response.env[:body])
-    end
+    def base_path = 'tags'
   end
 end

@@ -1,94 +1,34 @@
+# frozen_string_literal: true
+
 module NationBuilder
-  class People < RemoteController
-    include NationBuilder::Actions::Show
-    include NationBuilder::Actions::List
-    include NationBuilder::Actions::Update
-    include NationBuilder::Actions::Create
+  class People < Resource
+    def show(id) = client.get(member_path(id)).body
+    def create(params) = client.post(base_path, params).body
+    def update(id, params) = client.put(member_path(id), params).body
+    def search(params) = client.get("#{base_path}/search", params).body
+    def push(params) = client.put("#{base_path}/push", params).body
+    def add(params) = client.put("#{base_path}/add", params).body
 
-    def controller_name
-      'people'
-    end
-
+    # @return [Hash, nil] the matching person, or nil when NationBuilder finds no match
     def match(params)
-      begin
-        JSON.parse(client.get("#{base_path}/match", params: params).response.env[:body])
-      rescue OAuth2::Error => e
-        if e.response.parsed && e.response.parsed['code'] == 'no_matches'
-          return nil
-        else
-          raise e
-        end
-      end
+      client.get("#{base_path}/match", params).body
+    rescue Error => e
+      return nil if e.code == 'no_matches'
+
+      raise
     end
 
-    def search(params)
-      JSON.parse(client.get("#{base_path}/search", params: params).response.env[:body])
-    end
-
-    def create_or_update params
-      person = self.match('email' => params['person']['email'])
-      if person
-        new_person = person['person'].merge(params['person'])
-        r = self.update new_person['id'], 'person' => new_person
-        {is_new: false, response: r}
-      else
-        r = self.create params
-        {is_new: true, response: r}
-      end
-    end
-
-    def match_or_add(params)
-      person = self.match('email' => params['person']['email'])
-      if person
-        r = self.add(params)
-        {is_new: false, response: r}
-      else
-        r = self.add(params)
-        {is_new: true, response: r}
-      end
-    end
-
-    def push(params)
-      body = JSON.generate(params)
-      JSON.parse(client.put("#{base_path}/push", body: body).response.env[:body])
-    end
-
-    def add(params)
-      body = JSON.generate(params)
-      begin
-        JSON.parse(client.put("#{base_path}/add", body: body).response.env[:body])
-      rescue OAuth2::Error => e
-        if e.response.parsed['code'] == 'validation_failed'
-          raise NationBuilder::Exceptions::ValidationError.new(e.response.parsed['message'], e.response.parsed['validation_errors'], e.response.parsed['code'])
-        else
-          raise e
-        end
-      end
-
-    end
-
-    def taggings(person_id)
-      JSON.parse(client.get(taggings_path(person_id)).response.env[:body])
-    end
-
-    def add_tagging(person_id, tag)
-      body = JSON.generate({'tagging' => {'tag' => tag}})
-      JSON.parse(client.put(taggings_path(person_id), body: body).response.env[:body])
-    end
+    def taggings(person_id) = client.get(taggings_path(person_id)).body
+    def add_tagging(person_id, tag) = client.put(taggings_path(person_id), { 'tagging' => { 'tag' => tag } }).body
 
     def delete_tagging(person_id, tag)
-      response = client.delete("#{taggings_path(person_id)}/#{tag}")
-      if response.response.env[:status] == 204
-        return true
-      else
-        return response
-      end
+      client.delete("#{taggings_path(person_id)}/#{URI.encode_uri_component(tag.to_s)}")
+      nil
     end
 
     private
 
-    def taggings_path(person_id)
-      "#{base_path}/#{CGI.escape(person_id.to_s)}/taggings"
-    end
+    def base_path = 'people'
+    def taggings_path(person_id) = "#{member_path(person_id)}/taggings"
   end
 end

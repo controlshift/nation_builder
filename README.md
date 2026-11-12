@@ -1,35 +1,47 @@
 # nation_builder
 
-A very simple ruby gem for interacting with NB people API. 
+[![CI](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml/badge.svg)](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml)
 
-http://nationbuilder.com/api_documentation
+A small Ruby client for the [NationBuilder v1 API](https://nationbuilder.com/api_documentation) people and tags
+endpoints, built on Faraday.
 
-### Usage
+## Usage
 
-```
+The client takes an OAuth 2.0 access token. Obtaining one (the authorisation code flow) is left to your application.
+
+```ruby
 require 'nation_builder'
-client = NationBuilder.new(hostname: 'whatever.nationbuilder.com', client_id: 'id', client_secret: 'secret', username: 'you@nation.com', password: 'pass')
-client.people.create('person' => {'first_name' => 'George', 'last_name' => 'Washington', 'email' => 'george@washington.com'})
-client.people.match('email' => 'george@washington.com) # either a person hash or nil. 
-client.people.list # returns people in nation
-client.tags.list # all tags.
+
+client = NationBuilder.new(hostname: 'mynation.nationbuilder.com', token: access_token)
+
+client.people.match('email' => 'george@example.com') # person hash, or nil when there is no match
+client.people.add('person' => { 'email' => 'george@example.com', 'first_name' => 'George' })
+client.people.update(17, 'person' => { 'email_opt_in' => false })
+client.people.add_tagging(17, 'volunteer')
+client.tags.list
 ```
 
-### Contributing 
+Optional keyword arguments: `logger:` (logs rate limit headers), `instrumentation:` (a callable invoked before each
+request with `{ path:, request_type: }`), `adapter:`, `open_timeout:` and `timeout:`.
 
-The current gem is minimalist -- but we'd welcome pull requests with additional functionality!
+### Errors
 
-[![CI Status](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml/badge.svg)](https://github.com/controlshift/nation_builder/actions/workflows/ci.yml)
+Non-2xx responses raise `NationBuilder::Error`, which exposes `status`, `code` (NationBuilder's error code) and
+`body`. Subclasses: `NotFoundError`, `ValidationError` (`#errors`) and `RateLimitedError` (`#limit`, `#remaining`,
+`#reset_at`).
 
-### Release
+## Development
 
 ```
-rake version:bump:minor
-BRANCH=main rake release
+bundle install
+bundle exec rake   # rubocop + rspec
 ```
 
-### Copyright
+## Release
 
-Copyright (c) 2013 ControlShift Ltd. See LICENSE.txt for
-further details.
+Bump `NationBuilder::VERSION` in `lib/nation_builder/version.rb`, update `CHANGELOG.md`, merge, then
+`bundle exec rake release`.
 
+## Copyright
+
+Copyright (c) 2013 ControlShift Ltd. See LICENSE.txt for further details.
