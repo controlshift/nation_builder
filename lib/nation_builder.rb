@@ -1,4 +1,5 @@
 require 'oauth2'
+require 'nation_builder/version'
 require 'active_support/all'
 require 'nation_builder/exceptions/validation_error'
 require 'nation_builder/actions/show'
