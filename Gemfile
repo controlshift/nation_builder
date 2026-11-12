@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
-# NationBuilder puts error messages in a different location.
-gem 'oauth2', git: 'https://github.com/controlshift/oauth2.git'
+gem 'oauth2', '~> 2.0'
 gem 'json', '>= 2.1'
 gem 'activesupport', '>3.0.0'
 

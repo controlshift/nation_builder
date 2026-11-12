@@ -58,7 +58,7 @@ Gem::Specification.new do |s|
   end
 
   if s.respond_to? :add_runtime_dependency then
-    s.add_runtime_dependency(%q<oauth2>.freeze, [">= 0"])
+    s.add_runtime_dependency(%q<oauth2>.freeze, ["~> 2.0"])
     s.add_runtime_dependency(%q<json>.freeze, [">= 2.1"])
     s.add_runtime_dependency(%q<activesupport>.freeze, ["> 3.0.0"])
     s.add_development_dependency(%q<webmock>.freeze, ["~> 3.0", ">= 3.0.1"])
@@ -67,7 +67,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency(%q<bundler>.freeze, [">= 0"])
     s.add_development_dependency(%q<juwelier>.freeze, ["~> 2.4", ">= 2.4.7"])
   else
-    s.add_dependency(%q<oauth2>.freeze, [">= 0"])
+    s.add_dependency(%q<oauth2>.freeze, ["~> 2.0"])
     s.add_dependency(%q<json>.freeze, [">= 2.1"])
     s.add_dependency(%q<activesupport>.freeze, ["> 3.0.0"])
     s.add_dependency(%q<webmock>.freeze, ["~> 3.0", ">= 3.0.1"])
