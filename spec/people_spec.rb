@@ -16,15 +16,18 @@ describe NationBuilder::People do
 
   describe '#list' do
     it 'returns an empty result set if the nation is empty' do
-      stub_nb(:get, 'people', body: { 'results' => [] })
+      stub_nb(:get, 'people', body: fixture('people_list_empty'))
 
       expect(people.list['results']).to be_empty
     end
 
     it 'returns the people in the nation' do
-      stub_nb(:get, 'people', body: { 'results' => [person['person']] })
+      stub_nb(:get, 'people', body: fixture('people_list_success'))
 
-      expect(people.list['results']).to eq([person['person']])
+      list = people.list
+
+      expect(list['total']).to eq(4)
+      expect(list['results'].map { |p| p['email'] }).to include('johndoe@gmail.com')
     end
   end
 
@@ -70,10 +73,21 @@ describe NationBuilder::People do
     end
   end
 
-  it '#update puts the person' do
-    stub_nb(:put, 'people/17', body: person).with(body: { 'person' => { 'email_opt_in' => false } })
+  describe '#update' do
+    it 'puts the person' do
+      stub_nb(:put, 'people/17', body: person).with(body: { 'person' => { 'email_opt_in' => false } })
 
-    expect(people.update(17, 'person' => { 'email_opt_in' => false })).to eq(person)
+      expect(people.update(17, 'person' => { 'email_opt_in' => false })).to eq(person)
+    end
+
+    it 'raises OAuth2::Error with a 404 response when the person does not exist' do
+      stub_nb(:put, 'people/99', status: 404, body: fixture('not_found'))
+
+      expect { people.update(99, 'person' => { 'email_opt_in' => false }) }.to raise_error(OAuth2::Error) { |e|
+        expect(e.response.status).to eq(404)
+        expect(e.response.parsed['code']).to eq('not_found')
+      }
+    end
   end
 
   it '#add_tagging puts the tag' do

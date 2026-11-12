@@ -10,9 +10,15 @@ module NationBuilderHelpers
     NationBuilder.new(hostname: 'test.nationbuilder.com', token: 'secret-token')
   end
 
+  # body may be a Hash, or a String of raw JSON such as a fixture
   def stub_nb(method, path, status: 200, body: {})
+    body = JSON.generate(body) unless body.is_a?(String)
     stub_request(method, "#{BASE_URL}/#{path}")
-      .to_return(status: status, body: JSON.generate(body), headers: { 'Content-Type' => 'application/json' })
+      .to_return(status: status, body: body, headers: { 'Content-Type' => 'application/json' })
+  end
+
+  def fixture(name)
+    File.read(File.expand_path("fixtures/#{name}.json", __dir__))
   end
 end
 
